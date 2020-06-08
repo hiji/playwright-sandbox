@@ -10,6 +10,23 @@ type ScreencastFrame = {
 
 export class VideoRecorder {
 
+  private recorders: Array<PageRecorder> = [];
+
+  async start(browser: ChromiumBrowser, page: Page, savePath: string) {
+    const recorder = new PageRecorder();
+    await recorder.start(browser, page, savePath);
+    this.recorders.push(recorder);
+  }
+
+  async stopAll() {
+    for (const recorder of this.recorders) {
+      await recorder.stop();
+    }
+  }
+}
+
+class PageRecorder {
+
   // 試した範囲では、Page.startScreencastの間隔はざっくりと最大800ミリ秒、最小で50ミリ秒程度だった
   // FPSに合わせて枚数増幅するので大きくてもよいが、ファイルサイズもあるので、最小に合わせて20にしておく
   private fps = 20;
