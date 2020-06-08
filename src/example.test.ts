@@ -13,7 +13,7 @@ describe("example", () => {
     // browser = await chromium.launch({headless: true});
     page = await browser.newPage();
 
-    await recorder.start(browser, page, 'example.mp4');
+    await recorder.start(page, 'example.mp4');
   });
 
   afterAll(async () => {
@@ -43,7 +43,7 @@ describe("example", () => {
   test('multi windows', async () => {
     const anotherPage = await browser.newPage();
 
-    await recorder.start(browser, anotherPage, 'example2.mp4');
+    await recorder.start(anotherPage, 'example2.mp4');
 
     await page.goto("http://www.google.co.jp");
     await anotherPage.goto("http://www.google.co.jp");

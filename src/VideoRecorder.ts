@@ -1,4 +1,4 @@
-import { Page, ChromiumBrowser, CDPSession } from "playwright";
+import { Page, ChromiumBrowserContext, CDPSession } from "playwright";
 import * as ffmpeg from 'fluent-ffmpeg';
 import { PassThrough } from 'stream';
 // import * as fs from "fs";
@@ -12,9 +12,9 @@ export class VideoRecorder {
 
   private recorders: Array<PageRecorder> = [];
 
-  async start(browser: ChromiumBrowser, page: Page, savePath: string) {
+  async start(page: Page, savePath: string) {
     const recorder = new PageRecorder();
-    await recorder.start(browser, page, savePath);
+    await recorder.start(page, savePath);
     this.recorders.push(recorder);
   }
 
@@ -36,7 +36,7 @@ class PageRecorder {
   private cdpSession: CDPSession;
   // private num = 0;
 
-  async start(browser: ChromiumBrowser, page: Page, savePath: string) {
+  async start(page: Page, savePath: string) {
 
     this.frameStream = new FrameBufferStream(this.fps);
 
@@ -60,7 +60,8 @@ class PageRecorder {
         .save(savePath);
     });
 
-    const context = await browser.newContext();
+    // Chrome前提でとりあえず実装
+    const context = <ChromiumBrowserContext> page.context();
     this.cdpSession = await context.newCDPSession(page);
 
     // 1フレーム毎に通知するようにスクリーンキャストを開始
