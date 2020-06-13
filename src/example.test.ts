@@ -1,9 +1,15 @@
 import { chromium, Page, ChromiumBrowser, CDPSession } from "playwright";
 import { VideoRecorder } from "./VideoRecorder";
+import Debug from "debug";
 
 let browser: ChromiumBrowser;
 let page: Page;
 const recorder = new VideoRecorder();
+const debug = Debug('test');
+
+// enable('*')にすると膨大な量が出力されて止まらなくなった
+// 他のモジュール内部でもdebugモジュールを使っていて、それに反応している？
+Debug.enable('test');
 
 describe("example", () => {
 
@@ -24,6 +30,9 @@ describe("example", () => {
   });
 
   test('Google search', async () => {
+    console.log('Google search start.');
+    debug('Google search start.');
+
     await page.goto("http://www.google.co.jp");
 
     await page.type('css=input', 'wiki');
@@ -40,7 +49,10 @@ describe("example", () => {
     ]);
   });
 
-  test('multi windows', async () => {
+  test('Multi windows', async () => {
+    console.log('Multi windows start.');
+    debug('Multi windows start.');
+
     const anotherPage = await browser.newPage();
 
     await recorder.start(anotherPage, 'example2.mp4');
